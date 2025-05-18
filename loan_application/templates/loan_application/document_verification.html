@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Document Verification</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>{{ document.document_type }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <!-- Document Preview -->
+                    <div class="document-preview mb-3">
+                        {% if document.file.url|lower|endswith:'.pdf' %}
+                            <embed src="{{ document.file.url }}" type="application/pdf" width="100%" height="600px">
+                        {% else %}
+                            <img src="{{ document.file.url }}" class="img-fluid" alt="Document">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <!-- Verification Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">Verification Notes</label>
+                            <textarea class="form-control" id="notes" name="notes" rows="4"></textarea>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" name="action" value="verify" class="btn btn-success">Verify Document</button>
+                            <button type="submit" name="action" value="reject" class="btn btn-danger">Reject Document</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Bank Staff Dashboard</h2>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Applications</h5>
+                    <h2>{{ pending_applications }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Approved Applications</h5>
+                    <h2>{{ approved_applications }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Rejected Applications</h5>
+                    <h2>{{ rejected_applications }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Applications List -->
+    <div class="card">
+        <div class="card-header">
+            <h3>Recent Applications</h3>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Application ID</th>
+                        <th>Customer</th>
+                        <th>Loan Type</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for application in applications %}
+                    <tr>
+                        <td>{{ application.id }}</td>
+                        <td>{{ application.user.get_full_name }}</td>
+                        <td>{{ application.loan_type }}</td>
+                        <td>₹{{ application.amount }}</td>
+                        <td><span class="badge bg-{{ application.get_status_color }}">{{ application.status }}</span></td>
+                        <td>
+                            <a href="{% url 'loan_application_detail' application.pk %}" class="btn btn-sm btn-info">View</a>
+                            <a href="{% url 'customer_tracking' application.pk %}" class="btn btn-sm btn-primary">Track</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

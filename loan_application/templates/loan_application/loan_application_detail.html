@@ -1,0 +1,89 @@
+{% extends 'loan_application/base.html' %}
+
+{% block title %}Application Details - Loan Application System{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h2>Loan Application Details</h2>
+        <span class="badge bg-{{ application.status|status_color }}">{{ application.get_status_display }}</span>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h4>Application Information</h4>
+                <table class="table">
+                    <tr>
+                        <th>Loan Type:</th>
+                        <td>{{ application.loan_type.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Amount:</th>
+                        <td>₹{{ application.amount }}</td>
+                    </tr>
+                    <tr>
+                        <th>Tenure:</th>
+                        <td>{{ application.tenure }} months</td>
+                    </tr>
+                    <tr>
+                        <th>Status:</th>
+                        <td>{{ application.get_status_display }}</td>
+                    </tr>
+                    <tr>
+                        <th>Application Date:</th>
+                        <td>{{ application.application_date }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h4>Documents</h4>
+                {% if application.document_set.exists %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Document Type</th>
+                                <th>Status</th>
+                                <th>Uploaded</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for doc in application.document_set.all %}
+                                <tr>
+                                    <td>{{ doc.document_type }}</td>
+                                    <td>
+                                        {% if doc.verified %}
+                                            <span class="badge bg-success">Verified</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ doc.uploaded_at }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No documents uploaded yet.</p>
+                {% endif %}
+                <a href="{% url 'upload_documents' pk=application.pk %}" class="btn btn-primary">Upload Documents</a>
+            </div>
+        </div>
+
+        {% if user.role in 'bank_staff,admin' %}
+            <div class="mt-4">
+                <h4>Update Application Status</h4>
+                <form method="post" action="{% url 'loan_application_update' pk=application.pk %}">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field|add_class:"form-control" }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Update Status</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

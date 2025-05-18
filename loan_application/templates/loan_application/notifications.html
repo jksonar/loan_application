@@ -1,0 +1,23 @@
+{% extends 'loan_application/base.html' %}
+
+{% block title %}Notifications - Loan Application System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Notifications</h2>
+
+{% if notifications %}
+    <div class="list-group">
+        {% for notification in notifications %}
+            <div class="list-group-item list-group-item-action{% if not notification.read %} active{% endif %}">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ notification.title }}</h5>
+                    <small>{{ notification.created_at|timesince }} ago</small>
+                </div>
+                <p class="mb-1">{{ notification.message }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="alert alert-info">No new notifications.</div>
+{% endif %}
+{% endblock %}

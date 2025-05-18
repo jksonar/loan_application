@@ -1,0 +1,47 @@
+{% extends 'loan_application/base.html' %}
+{% load loan_filters %}
+
+{% block title %}My Applications - Loan Application System{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">My Loan Applications</h2>
+
+{% if applications %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Loan Type</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Application Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                    <tr>
+                        <td>{{ application.loan_type.name }}</td>
+                        <td>₹{{ application.amount }}</td>
+                        <td>
+                            <span class="badge bg-{{ application.status|status_color }}">
+                                {{ application.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ application.application_date }}</td>
+                        <td>
+                            <a href="{% url 'loan_application_detail' pk=application.pk %}" 
+                               class="btn btn-sm btn-primary">View Details</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        You haven't submitted any loan applications yet.
+        <a href="{% url 'loan_types' %}" class="alert-link">Browse available loan types</a>
+    </div>
+{% endif %}
+{% endblock %}

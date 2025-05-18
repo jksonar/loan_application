@@ -1,0 +1,36 @@
+{% extends 'loan_application/base.html' %}
+
+{% block title %}Upload Documents - Loan Application System{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2>Upload Documents</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h5>Required Documents:</h5>
+                    {{ loan_application.loan_type.required_documents|linebreaks }}
+                </div>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                            {{ field|add_class:"form-control" }}
+                            {% if field.errors %}
+                                <div class="text-danger">
+                                    {{ field.errors|join:", " }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Upload Document</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
